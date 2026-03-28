@@ -25,11 +25,11 @@ const ExercicesPage = () => {
   const [reload, setReload] = useState(false)
   const [titre, setTitre] = useState('')
   const [description, setDescription] = useState('')
-  const [duree, setDuree] = useState(0)
-  const [inspiration, setInspiration] = useState(0)
-  const [apnee, setApnee] = useState(0)
-  const [expiration, setExpiration] = useState(0)
-  const [categorieId, setCategorieId] = useState(0)
+  const [duree, setDuree] = useState<number | ''>('')
+  const [inspiration, setInspiration] = useState<number | ''>('')
+  const [apnee, setApnee] = useState<number | ''>('')
+  const [expiration, setExpiration] = useState<number | ''>('')
+  const [categorieId, setCategorieId] = useState<number | ''>('')
   const [editId, setEditId] = useState<number | null>(null)
 
   useEffect(() => {
@@ -104,10 +104,10 @@ const ExercicesPage = () => {
       <h2>{editId ? 'Modifier' : 'Ajouter'} un exercice</h2>
       <input placeholder='Titre' value={titre} onChange={e => setTitre(e.target.value)} />
       <input placeholder='Description' value={description} onChange={e => setDescription(e.target.value)} />
-      <input type='number' placeholder='Durée (secondes)' value={duree} onChange={e => setDuree(Number(e.target.value))} />
-      <input type='number' placeholder='Inspiration (secondes)' value={inspiration} onChange={e => setInspiration(Number(e.target.value))} />
-      <input type='number' placeholder='Apnée (secondes)' value={apnee} onChange={e => setApnee(Number(e.target.value))} />
-      <input type='number' placeholder='Expiration (secondes)' value={expiration} onChange={e => setExpiration(Number(e.target.value))} />
+      <input type='number' placeholder='Durée totale en secondes' value={duree} onChange={e => setDuree(e.target.value === '' ? '' : Number(e.target.value))} />
+      <input type='number' placeholder='Inspiration en secondes' value={inspiration} onChange={e => setInspiration(e.target.value === '' ? '' : Number(e.target.value))} />
+      <input type='number' placeholder='Apnée en secondes' value={apnee} onChange={e => setApnee(e.target.value === '' ? '' : Number(e.target.value))} />
+      <input type='number' placeholder='Expiration en secondes' value={expiration} onChange={e => setExpiration(e.target.value === '' ? '' : Number(e.target.value))} />
       <select value={categorieId} onChange={e => setCategorieId(Number(e.target.value))}>
         <option value={0}>Choisir une catégorie</option>
         {categories.map(c => (

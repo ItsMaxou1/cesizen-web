@@ -1,0 +1,197 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f0f4f0;
+  color: #2d2d2d;
+}
+
+/* LOGIN */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  gap: 16px;
+}
+
+.login-container h1 {
+  color: #2eaf8a;
+  margin-bottom: 16px;
+}
+
+.login-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 320px;
+  background: white;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+
+/* DASHBOARD */
+.dashboard {
+  display: flex;
+  height: 100vh;
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 32px;
+  overflow-y: auto;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 220px;
+  background-color: #2eaf8a;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  gap: 16px;
+}
+
+.sidebar h2 {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.sidebar p {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+  flex: 1;
+}
+
+.sidebar nav a {
+  color: white;
+  text-decoration: none;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: background 0.2s;
+}
+
+.sidebar nav a:hover {
+  background-color: rgba(255,255,255,0.15);
+}
+
+.sidebar nav a.active {
+  background-color: rgba(255,255,255,0.25);
+  font-weight: bold;
+}
+
+.sidebar button {
+  background-color: rgba(255,255,255,0.15);
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.sidebar button:hover {
+  background-color: rgba(255,255,255,0.25);
+}
+
+/* PAGES */
+h1 {
+  font-size: 24px;
+  margin-bottom: 24px;
+  color: #2eaf8a;
+}
+
+h2 {
+  font-size: 18px;
+  margin-bottom: 16px;
+  margin-top: 24px;
+}
+
+/* FORMULAIRES */
+input, select, textarea {
+  padding: 10px 12px;
+  border: 1px solid #d0d8d4;
+  border-radius: 8px;
+  font-size: 14px;
+  width: 100%;
+  margin-bottom: 8px;
+  background: white;
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* BOUTONS */
+button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  background-color: #2eaf8a;
+  color: white;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background-color: #25906f;
+}
+
+/* TABLEAUX */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  margin-top: 24px;
+}
+
+th {
+  background-color: #2eaf8a;
+  color: white;
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 14px;
+}
+
+td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f4f0;
+  font-size: 14px;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover td {
+  background-color: #f5faf8;
+}
+
+/* ERREUR */
+.erreur {
+  color: #e8405a;
+  margin-bottom: 12px;
+}
