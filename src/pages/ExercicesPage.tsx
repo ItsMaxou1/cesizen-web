@@ -15,6 +15,7 @@ interface Exercice {
   expiration: number
   isActive: boolean
   categorie: Categorie
+  //categorie: Categorie veut dire que chaque exercice contient un objet catégorie avec id et nom
 }
 
 const ExercicesPage = () => {
