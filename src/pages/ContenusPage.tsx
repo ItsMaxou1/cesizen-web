@@ -93,8 +93,17 @@ const ContenusPage = () => {
           <option key={c.id} value={c.id}>{c.nom}</option>
         ))}
       </select>
-      <button onClick={handleSubmit}>{editId ? 'Modifier' : 'Ajouter'}</button>
-      {editId && <button onClick={() => setEditId(null)}>Annuler</button>}
+      <button 
+        className='warning' 
+        onClick={handleSubmit}>{editId ? 'Modifier' : 'Ajouter'}
+      </button>
+
+      {editId && 
+        <button
+          className='secondary' 
+          onClick={() => setEditId(null)}>Annuler
+        </button>
+      }
 
       <table>
         <thead>
@@ -112,9 +121,19 @@ const ContenusPage = () => {
               <td>{c.categorie.nom}</td>
               <td>{c.isActive ? 'Oui' : 'Non'}</td>
               <td>
-                <button onClick={() => handleEdit(c)}>Modifier</button>
-                <button onClick={() => handleToggle(c.id)}>{c.isActive ? 'Désactiver' : 'Activer'}</button>
-                <button onClick={() => handleDelete(c.id)}>Supprimer</button>
+                <button 
+                  className='warning' 
+                  onClick={() => handleEdit(c)}>Modifier
+                </button>
+                <button
+                  className={c.isActive ? 'toggle-off' : 'toggle-on'} 
+                  onClick={() => handleToggle(c.id)}>{c.isActive ? 'Désactiver' : 'Activer'}
+                </button>
+
+                <button 
+                  className='danger' 
+                  onClick={() => handleDelete(c.id)}>Supprimer
+                </button>
               </td>
             </tr>
           ))}

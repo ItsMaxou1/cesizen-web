@@ -13,6 +13,11 @@ const UtilisateursPage = () => {
   const token = localStorage.getItem('token')
   const [users, setUsers] = useState<User[]>([])
   const [erreur, setErreur] = useState('')
+  const [nom, setNom] = useState('')
+  const [prenom, setPrenom] = useState('')
+  const [email, setEmail] = useState('')
+  const [motDePasse, setMotDePasse] = useState('')
+  const [reload, setReload] = useState(false)
 
   const toggleActif = async (id: number) => {
     try {
@@ -55,15 +60,34 @@ const UtilisateursPage = () => {
     }
   }
 
+  const createAdmin = async () => {
+    await fetch('http://localhost:3001/api/users/create-admin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ nom, prenom, email, mot_de_passe: motDePasse })
+    })
+    setNom('')
+    setPrenom('')
+    setEmail('')
+    setMotDePasse('')
+    setReload(r => !r)
+  }
+
   useEffect(() => {
     loadUsers()
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [reload])
 
   return (
     <div>
       <h1>Utilisateurs</h1>
       {erreur && <p>{erreur}</p>}
+      <h2>Créer un administrateur</h2>
+      <input placeholder='Nom' value={nom} onChange={e => setNom(e.target.value)} />
+      <input placeholder='Prénom' value={prenom} onChange={e => setPrenom(e.target.value)} />
+      <input placeholder='Email' value={email} onChange={e => setEmail(e.target.value)} />
+      <input type='password' placeholder='Mot de passe' value={motDePasse} onChange={e => setMotDePasse(e.target.value)} />
+      <button onClick={createAdmin}>Créer un admin</button>
       <table>
         <thead>
           <tr>
@@ -84,10 +108,12 @@ const UtilisateursPage = () => {
               <td>{user.role}</td>
               <td>{user.isActive ? 'Oui' : 'Non'}</td>
               <td>
-                <button onClick={() => toggleActif(user.id)}>
+                <button
+                  className={user.isActive ? 'toggle-off' : 'toggle-on'}
+                  onClick={() => toggleActif(user.id)}>
                   {user.isActive ? 'Désactiver' : 'Activer'}
                 </button>
-                <button onClick={() => deleteUser(user.id)}>Supprimer</button>
+                <button className='danger' onClick={() => deleteUser(user.id)}>Supprimer</button>
               </td>
             </tr>
           ))}

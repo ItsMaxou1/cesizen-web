@@ -55,7 +55,10 @@ const CommentairesPage = () => {
               <td>{c.contenu}</td>
               <td>{new Date(c.createdAt).toLocaleDateString()}</td>
               <td>
-                <button onClick={() => handleDelete(c.id)}>Supprimer</button>
+                <button 
+                  className='danger' 
+                  onClick={() => handleDelete(c.id)}>Supprimer
+                </button>
               </td>
             </tr>
           ))}

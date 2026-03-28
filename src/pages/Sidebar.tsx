@@ -15,7 +15,7 @@ const Sidebar = () => {
         <NavLink to='/contenus'>Contenus</NavLink>
         <NavLink to='/commentaires'>Commentaires</NavLink>
       </nav>
-      <button onClick={logout}>Se déconnecter</button>
+      <button className='danger' onClick={logout}>Se déconnecter</button>
     </div>
   )
 }

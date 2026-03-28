@@ -59,8 +59,17 @@ const CategoriesPage = () => {
       <h2>{editId ? 'Modifier' : 'Ajouter'} une catégorie</h2>
       <input placeholder='Nom' value={nom} onChange={e => setNom(e.target.value)} />
       <input placeholder='Description' value={description} onChange={e => setDescription(e.target.value)} />
-      <button onClick={handleSubmit}>{editId ? 'Modifier' : 'Ajouter'}</button>
-      {editId && <button onClick={() => { setEditId(null); setNom(''); setDescription('') }}>Annuler</button>}
+      <button 
+        className='warning' 
+        onClick={handleSubmit}>{editId ? 'Modifier' : 'Ajouter'}
+      </button>
+      
+      {editId && 
+        <button
+          className='secondary' 
+          onClick={() => { setEditId(null); setNom(''); setDescription('') }}>Annuler
+        </button>
+      }
 
       <table>
         <thead>
@@ -76,8 +85,15 @@ const CategoriesPage = () => {
               <td>{categorie.nom}</td>
               <td>{categorie.description}</td>
               <td>
-                <button onClick={() => handleEdit(categorie)}>Modifier</button>
-                <button onClick={() => handleDelete(categorie.id)}>Supprimer</button>
+                <button 
+                  className='warning' 
+                  onClick={() => handleEdit(categorie)}>Modifier
+                </button>
+
+                <button 
+                  className='danger' 
+                  onClick={() => handleDelete(categorie.id)}>Supprimer
+                </button>
               </td>
             </tr>
           ))}

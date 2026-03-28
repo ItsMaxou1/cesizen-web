@@ -108,14 +108,25 @@ const ExercicesPage = () => {
       <input type='number' placeholder='Inspiration en secondes' value={inspiration} onChange={e => setInspiration(e.target.value === '' ? '' : Number(e.target.value))} />
       <input type='number' placeholder='Apnée en secondes' value={apnee} onChange={e => setApnee(e.target.value === '' ? '' : Number(e.target.value))} />
       <input type='number' placeholder='Expiration en secondes' value={expiration} onChange={e => setExpiration(e.target.value === '' ? '' : Number(e.target.value))} />
+
       <select value={categorieId} onChange={e => setCategorieId(Number(e.target.value))}>
         <option value={0}>Choisir une catégorie</option>
         {categories.map(c => (
           <option key={c.id} value={c.id}>{c.nom}</option>
         ))}
       </select>
-      <button onClick={handleSubmit}>{editId ? 'Modifier' : 'Ajouter'}</button>
-      {editId && <button onClick={() => setEditId(null)}>Annuler</button>}
+
+      <button 
+        className='warning' 
+        onClick={handleSubmit}>{editId ? 'Modifier' : 'Ajouter'}
+      </button>
+
+      {editId && 
+        <button
+          className='secondary' 
+          onClick={() => setEditId(null)}>Annuler
+        </button>
+      }
 
       <table>
         <thead>
@@ -139,9 +150,20 @@ const ExercicesPage = () => {
               <td>{exercice.expiration}s</td>
               <td>{exercice.isActive ? 'Oui' : 'Non'}</td>
               <td>
-                <button onClick={() => handleEdit(exercice)}>Modifier</button>
-                <button onClick={() => handleToggle(exercice.id)}>{exercice.isActive ? 'Désactiver' : 'Activer'}</button>
-                <button onClick={() => handleDelete(exercice.id)}>Supprimer</button>
+                <button 
+                  className='warning' 
+                  onClick={() => handleEdit(exercice)}>Modifier
+                </button>
+
+                <button
+                  className={exercice.isActive ? 'toggle-off' : 'toggle-on'} 
+                  onClick={() => handleToggle(exercice.id)}>{exercice.isActive ? 'Désactiver' : 'Activer'}
+                </button>
+                
+                <button 
+                  className='danger' 
+                  onClick={() => handleDelete(exercice.id)}>Supprimer
+                </button>
               </td>
             </tr>
           ))}
