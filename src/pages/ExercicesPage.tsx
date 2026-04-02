@@ -15,7 +15,6 @@ interface Exercice {
   expiration: number
   isActive: boolean
   categorie: Categorie
-  type: string
   //categorie: Categorie veut dire que chaque exercice contient un objet catégorie avec id et nom
 }
 
@@ -32,7 +31,6 @@ const ExercicesPage = () => {
   const [expiration, setExpiration] = useState<number | ''>('')
   const [categorieId, setCategorieId] = useState<number | ''>('')
   const [editId, setEditId] = useState<number | null>(null)
-  const [type, setType] = useState('bulle')
 
   useEffect(() => {
     const load = async () => {
@@ -58,7 +56,7 @@ const ExercicesPage = () => {
     await fetch(url, {
       method,
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ titre, description, duree_secondes: duree, inspiration, apnee, expiration, categorieId, type })
+      body: JSON.stringify({ titre, description, duree_secondes: duree, inspiration, apnee, expiration, categorieId })
     })
     setTitre('')
     setDescription('')
@@ -80,7 +78,6 @@ const ExercicesPage = () => {
     setApnee(exercice.apnee)
     setExpiration(exercice.expiration)
     setCategorieId(exercice.categorie.id)
-    setType(exercice.type)
   }
 
   const handleToggle = async (id: number) => {
@@ -117,11 +114,6 @@ const ExercicesPage = () => {
         {categories.map(c => (
           <option key={c.id} value={c.id}>{c.nom}</option>
         ))}
-      </select>
-
-      <select value={type} onChange={e => setType(e.target.value)}>
-        <option value='bulle'>Bulle (cercle)</option>
-        <option value='barre'>Barre de progression</option>
       </select>
 
       <button 

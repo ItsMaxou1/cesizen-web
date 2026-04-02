@@ -1,10 +1,10 @@
 import { Routes, Route } from 'react-router-dom'
-import Sidebar from '../components/Sidebar'
-import UtilisateursPage from './UtilisateursPage'
-import CategoriesPage from './CategoriesPage'
-import ExercicesPage from './ExercicesPage'
-import ContenusPage from './ContenusPage'
-import CommentairesPage from './CommentairesPage'
+import Sidebar from './Sidebar'
+import UtilisateursPage from '../pages/UtilisateursPage'
+import CategoriesPage from '../pages/CategoriesPage'
+import ExercicesPage from '../pages/ExercicesPage'
+import ContenusPage from '../pages/ContenusPage'
+import CommentairesPage from '../pages/CommentairesPage'
 
 const DashboardPage = () => {
   return (
