@@ -45,32 +45,60 @@ const UtilisateursPage = () => {
   }
 
   const loadUsers = async () => {
+    if (!token) {
+      setErreur('Session expirée, veuillez vous reconnecter')
+      setUsers([])
+      return
+    }
+
     try {
+      setErreur('')
       const res = await fetch('http://localhost:3001/api/users', {
         headers: { Authorization: `Bearer ${token}` }
       })
       const data = await res.json()
       if (!res.ok) {
-        setErreur('Erreur lors du chargement des utilisateurs')
+        setErreur(data?.message || 'Erreur lors du chargement des utilisateurs')
+        setUsers([])
         return
       }
-      setUsers(data)
+      setUsers(Array.isArray(data) ? data : [])
     } catch {
       setErreur('Erreur lors du chargement des utilisateurs')
+      setUsers([])
     }
   }
 
-  const createAdmin = async () => {
-    await fetch('http://localhost:3001/api/users/create-admin', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ nom, prenom, email, mot_de_passe: motDePasse })
-    })
-    setNom('')
-    setPrenom('')
-    setEmail('')
-    setMotDePasse('')
-    setReload(r => !r)
+  const createAdmin = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!token) {
+      setErreur('Session expirée, veuillez vous reconnecter')
+      return
+    }
+
+    try {
+      setErreur('')
+      const res = await fetch('http://localhost:3001/api/users/create-admin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ nom, prenom, email, mot_de_passe: motDePasse })
+      })
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null)
+        setErreur(data?.message || 'Erreur lors de la création de l\'administrateur')
+        return
+      }
+
+      setNom('')
+      setPrenom('')
+      setEmail('')
+      setMotDePasse('')
+      setReload(r => !r)
+    } catch {
+      setErreur('Erreur serveur lors de la création de l\'administrateur')
+    }
   }
 
   useEffect(() => {
@@ -83,11 +111,13 @@ const UtilisateursPage = () => {
       <h1>Utilisateurs</h1>
       {erreur && <p>{erreur}</p>}
       <h2>Créer un administrateur</h2>
-      <input placeholder='Nom' value={nom} onChange={e => setNom(e.target.value)} />
-      <input placeholder='Prénom' value={prenom} onChange={e => setPrenom(e.target.value)} />
-      <input placeholder='Email' value={email} onChange={e => setEmail(e.target.value)} />
-      <input type='password' placeholder='Mot de passe' value={motDePasse} onChange={e => setMotDePasse(e.target.value)} />
-      <button onClick={createAdmin}>Créer un admin</button>
+      <form onSubmit={createAdmin}>
+        <input placeholder='Nom' value={nom} onChange={e => setNom(e.target.value)} />
+        <input placeholder='Prénom' value={prenom} onChange={e => setPrenom(e.target.value)} />
+        <input placeholder='Email' value={email} onChange={e => setEmail(e.target.value)} />
+        <input type='password' placeholder='Mot de passe' value={motDePasse} onChange={e => setMotDePasse(e.target.value)} />
+        <button type='submit'>Créer un admin</button>
+      </form>
       <table>
         <thead>
           <tr>

@@ -15,6 +15,7 @@ interface Exercice {
   expiration: number
   isActive: boolean
   categorie: Categorie
+  type: string
   //categorie: Categorie veut dire que chaque exercice contient un objet catégorie avec id et nom
 }
 
@@ -22,6 +23,7 @@ const ExercicesPage = () => {
   const token = localStorage.getItem('token')
   const [exercices, setExercices] = useState<Exercice[]>([])
   const [categories, setCategories] = useState<Categorie[]>([])
+  const [erreur, setErreur] = useState('')
   const [reload, setReload] = useState(false)
   const [titre, setTitre] = useState('')
   const [description, setDescription] = useState('')
@@ -31,24 +33,56 @@ const ExercicesPage = () => {
   const [expiration, setExpiration] = useState<number | ''>('')
   const [categorieId, setCategorieId] = useState<number | ''>('')
   const [editId, setEditId] = useState<number | null>(null)
+  const [type, setType] = useState('bulle')
 
   useEffect(() => {
     const load = async () => {
-      const res = await fetch('http://localhost:3001/api/exercices')
-      const data = await res.json()
-      setExercices(data)
+      if (!token) {
+        setErreur('Session expirée, veuillez vous reconnecter')
+        setExercices([])
+        return
+      }
+
+      try {
+        const res = await fetch('http://localhost:3001/api/exercices', {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        const data = await res.json()
+
+        if (!res.ok) {
+          setErreur(data?.message || 'Erreur lors du chargement des exercices')
+          setExercices([])
+          return
+        }
+
+        setExercices(Array.isArray(data) ? data : [])
+      } catch {
+        setErreur('Erreur serveur lors du chargement des exercices')
+        setExercices([])
+      }
     }
     load()
-  }, [reload])
+  }, [reload, token])
 
   useEffect(() => {
     const load = async () => {
-      const res = await fetch('http://localhost:3001/api/categories')
-      const data = await res.json()
-      setCategories(data)
+      if (!token) {
+        setCategories([])
+        return
+      }
+
+      try {
+        const res = await fetch('http://localhost:3001/api/categories', {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        const data = await res.json()
+        setCategories(Array.isArray(data) ? data : [])
+      } catch {
+        setCategories([])
+      }
     }
     load()
-  }, [])
+  }, [token])
 
   const handleSubmit = async () => {
     const url = editId ? `http://localhost:3001/api/exercices/${editId}` : 'http://localhost:3001/api/exercices'
@@ -56,7 +90,7 @@ const ExercicesPage = () => {
     await fetch(url, {
       method,
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ titre, description, duree_secondes: duree, inspiration, apnee, expiration, categorieId })
+      body: JSON.stringify({ titre, description, duree_secondes: duree, inspiration, apnee, expiration, categorieId, type })
     })
     setTitre('')
     setDescription('')
@@ -65,6 +99,7 @@ const ExercicesPage = () => {
     setApnee(0)
     setExpiration(0)
     setCategorieId(0)
+    setType('bulle')
     setEditId(null)
     setReload(r => !r)
   }
@@ -78,6 +113,7 @@ const ExercicesPage = () => {
     setApnee(exercice.apnee)
     setExpiration(exercice.expiration)
     setCategorieId(exercice.categorie.id)
+    setType(exercice.type)
   }
 
   const handleToggle = async (id: number) => {
@@ -100,6 +136,7 @@ const ExercicesPage = () => {
   return (
     <div>
       <h1>Exercices de respiration</h1>
+      {erreur && <p>{erreur}</p>}
 
       <h2>{editId ? 'Modifier' : 'Ajouter'} un exercice</h2>
       <input placeholder='Titre' value={titre} onChange={e => setTitre(e.target.value)} />
@@ -114,6 +151,11 @@ const ExercicesPage = () => {
         {categories.map(c => (
           <option key={c.id} value={c.id}>{c.nom}</option>
         ))}
+      </select>
+
+      <select value={type} onChange={e => setType(e.target.value)}>
+        <option value='bulle'>Bulle (cercle)</option>
+        <option value='barre'>Barre de progression</option>
       </select>
 
       <button 

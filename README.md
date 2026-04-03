@@ -4,6 +4,18 @@ Interface d'administration du projet **CESIZen**, une application de gestion du 
 
 Construite avec **React**, **TypeScript** et **Vite**.
 
+Campagne minimale avant toute livraison
+Avant chaque démonstration ou livraison, les étapes suivantes doivent être validées :
+
+    1. Ouvrir l'application mobile — vérifier l'affichage de l'accueil (exercices + contenus)
+    2. Ouvrir la liste des exercices — vérifier les filtres par catégorie
+    3. Lancer un exercice — vérifier l'animation (bulle ou barre selon le type)
+    4. Se connecter — vérifier l'accès au profil avec nom/prénom/email
+    5. Ajouter un exercice en favori — vérifier la présence dans le profil
+    6. Consulter un contenu informatif — vérifier les likes et commentaires
+    7. Se connecter au back-office admin — vérifier l'accès au dashboard
+    8. Se déconnecter depuis l'app mobile
+
 > Accès réservé aux administrateurs. Les utilisateurs utilisent l'application mobile.
 
 ---
@@ -12,11 +24,11 @@ Construite avec **React**, **TypeScript** et **Vite**.
 
 CESIZen est composé de 3 projets :
 
-| Projet | Description | Lien |
-|--------|-------------|------|
-| **cesizen-api** | Backend REST | [Repo](https://github.com/ItsMaxou1/cesizen-api) |
-| **cesizen-web** (ce repo) | Interface admin (React) | - |
-| **cesizen-mobile** | Application mobile (Expo) | [Repo](https://github.com/ItsMaxou1/cesizen-mobile) |
+| Projet                    | Description               | Lien                                                |
+| ------------------------- | ------------------------- | --------------------------------------------------- |
+| **cesizen-api**           | Backend REST              | [Repo](https://github.com/ItsMaxou1/cesizen-api)    |
+| **cesizen-web** (ce repo) | Interface admin (React)   | -                                                   |
+| **cesizen-mobile**        | Application mobile (Expo) | [Repo](https://github.com/ItsMaxou1/cesizen-mobile) |
 
 > L'API doit être lancée avant de démarrer ce projet.
 

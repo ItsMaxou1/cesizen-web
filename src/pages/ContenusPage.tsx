@@ -17,6 +17,7 @@ const ContenusPage = () => {
   const token = localStorage.getItem('token')
   const [contenus, setContenus] = useState<Contenu[]>([])
   const [categories, setCategories] = useState<Categorie[]>([])
+  const [erreur, setErreur] = useState('')
   const [reload, setReload] = useState(false)
   const [titre, setTitre] = useState('')
   const [contenu, setContenu] = useState('')
@@ -25,21 +26,52 @@ const ContenusPage = () => {
 
   useEffect(() => {
     const load = async () => {
-      const res = await fetch('http://localhost:3001/api/contenus')
-      const data = await res.json()
-      setContenus(data)
+      if (!token) {
+        setErreur('Session expirée, veuillez vous reconnecter')
+        setContenus([])
+        return
+      }
+
+      try {
+        const res = await fetch('http://localhost:3001/api/contenus', {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        const data = await res.json()
+
+        if (!res.ok) {
+          setErreur(data?.message || 'Erreur lors du chargement des contenus')
+          setContenus([])
+          return
+        }
+
+        setContenus(Array.isArray(data) ? data : [])
+      } catch {
+        setErreur('Erreur serveur lors du chargement des contenus')
+        setContenus([])
+      }
     }
     load()
-  }, [reload])
+  }, [reload, token])
 
   useEffect(() => {
     const load = async () => {
-      const res = await fetch('http://localhost:3001/api/categories')
-      const data = await res.json()
-      setCategories(data)
+      if (!token) {
+        setCategories([])
+        return
+      }
+
+      try {
+        const res = await fetch('http://localhost:3001/api/categories', {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        const data = await res.json()
+        setCategories(Array.isArray(data) ? data : [])
+      } catch {
+        setCategories([])
+      }
     }
     load()
-  }, [])
+  }, [token])
 
   const handleSubmit = async () => {
     const url = editId ? `http://localhost:3001/api/contenus/${editId}` : 'http://localhost:3001/api/contenus'
@@ -83,6 +115,7 @@ const ContenusPage = () => {
   return (
     <div>
       <h1>Contenus informatifs</h1>
+      {erreur && <p>{erreur}</p>}
 
       <h2>{editId ? 'Modifier' : 'Ajouter'} un contenu</h2>
       <input placeholder='Titre' value={titre} onChange={e => setTitre(e.target.value)} />

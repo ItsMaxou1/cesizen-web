@@ -9,6 +9,7 @@ interface Categorie {
 const CategoriesPage = () => {
   const token = localStorage.getItem('token')
   const [categories, setCategories] = useState<Categorie[]>([])
+  const [erreur, setErreur] = useState('')
   const [reload, setReload] = useState(false)
   const [nom, setNom] = useState('')
   const [description, setDescription] = useState('')
@@ -16,25 +17,66 @@ const CategoriesPage = () => {
 
   useEffect(() => {
     const load = async () => {
-      const res = await fetch('http://localhost:3001/api/categories')
-      const data = await res.json()
-      setCategories(data)
+      if (!token) {
+        setErreur('Session expirée, veuillez vous reconnecter')
+        setCategories([])
+        return
+      }
+
+      setErreur('')
+
+      try {
+        const res = await fetch('http://localhost:3001/api/categories', {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        const data = await res.json()
+
+        if (!res.ok) {
+          setErreur(data?.message || 'Erreur lors du chargement des catégories')
+          setCategories([])
+          return
+        }
+
+        setCategories(Array.isArray(data) ? data : [])
+      } catch {
+        setErreur('Erreur serveur lors du chargement des catégories')
+        setCategories([])
+      }
     }
+
     load()
-  }, [reload])
+  }, [reload, token])
 
   const handleSubmit = async () => {
+    if (!token) {
+      setErreur('Session expirée, veuillez vous reconnecter')
+      return
+    }
+
     const url = editId ? `http://localhost:3001/api/categories/${editId}` : 'http://localhost:3001/api/categories'
     const method = editId ? 'PUT' : 'POST'
-    await fetch(url, {
-      method,
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ nom, description })
-    })
-    setNom('')
-    setDescription('')
-    setEditId(null)
-    setReload(r => !r)
+
+    try {
+      setErreur('')
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ nom, description })
+      })
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null)
+        setErreur(data?.message || 'Erreur lors de l\'enregistrement de la catégorie')
+        return
+      }
+
+      setNom('')
+      setDescription('')
+      setEditId(null)
+      setReload(r => !r)
+    } catch {
+      setErreur('Erreur serveur lors de l\'enregistrement de la catégorie')
+    }
   }
 
   const handleEdit = (categorie: Categorie) => {
@@ -45,16 +87,35 @@ const CategoriesPage = () => {
 
   const handleDelete = async (id: number) => {
     if (!confirm('Supprimer cette catégorie ?')) return
-    await fetch(`http://localhost:3001/api/categories/${id}`, {
-      method: 'DELETE',
-      headers: { Authorization: `Bearer ${token}` }
-    })
-    setReload(r => !r)
+
+    if (!token) {
+      setErreur('Session expirée, veuillez vous reconnecter')
+      return
+    }
+
+    try {
+      setErreur('')
+      const res = await fetch(`http://localhost:3001/api/categories/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      })
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null)
+        setErreur(data?.message || 'Erreur lors de la suppression de la catégorie')
+        return
+      }
+
+      setReload(r => !r)
+    } catch {
+      setErreur('Erreur serveur lors de la suppression de la catégorie')
+    }
   }
 
   return (
     <div>
       <h1>Catégories</h1>
+      {erreur && <p>{erreur}</p>}
 
       <h2>{editId ? 'Modifier' : 'Ajouter'} une catégorie</h2>
       <input placeholder='Nom' value={nom} onChange={e => setNom(e.target.value)} />
