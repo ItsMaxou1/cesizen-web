@@ -33,7 +33,7 @@ const ExercicesPage = () => {
   const [expiration, setExpiration] = useState<number | ''>('')
   const [categorieId, setCategorieId] = useState<number | ''>('')
   const [editId, setEditId] = useState<number | null>(null)
-  const [type, setType] = useState('bulle')
+  const [type, setType] = useState<'bulle' | 'barre'>('bulle')
 
   useEffect(() => {
     const load = async () => {
@@ -55,7 +55,12 @@ const ExercicesPage = () => {
           return
         }
 
-        setExercices(Array.isArray(data) ? data : [])
+        setExercices(Array.isArray(data)
+          ? data.map((exercice) => ({
+              ...exercice,
+              type: exercice.type === 'barre' ? 'barre' : 'bulle'
+            }))
+          : [])
       } catch {
         setErreur('Erreur serveur lors du chargement des exercices')
         setExercices([])
@@ -85,23 +90,41 @@ const ExercicesPage = () => {
   }, [token])
 
   const handleSubmit = async () => {
+    if (!token) {
+      setErreur('Session expirée, veuillez vous reconnecter')
+      return
+    }
+
     const url = editId ? `http://localhost:3001/api/exercices/${editId}` : 'http://localhost:3001/api/exercices'
     const method = editId ? 'PUT' : 'POST'
-    await fetch(url, {
-      method,
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ titre, description, duree_secondes: duree, inspiration, apnee, expiration, categorieId, type })
-    })
-    setTitre('')
-    setDescription('')
-    setDuree(0)
-    setInspiration(0)
-    setApnee(0)
-    setExpiration(0)
-    setCategorieId(0)
-    setType('bulle')
-    setEditId(null)
-    setReload(r => !r)
+
+    try {
+      setErreur('')
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ titre, description, duree_secondes: duree, inspiration, apnee, expiration, categorieId, type })
+      })
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null)
+        setErreur(data?.message || 'Erreur lors de l\'enregistrement de l\'exercice')
+        return
+      }
+
+      setTitre('')
+      setDescription('')
+      setDuree(0)
+      setInspiration(0)
+      setApnee(0)
+      setExpiration(0)
+      setCategorieId(0)
+      setType('bulle')
+      setEditId(null)
+      setReload(r => !r)
+    } catch {
+      setErreur('Erreur serveur lors de l\'enregistrement de l\'exercice')
+    }
   }
 
   const handleEdit = (exercice: Exercice) => {
@@ -113,7 +136,7 @@ const ExercicesPage = () => {
     setApnee(exercice.apnee)
     setExpiration(exercice.expiration)
     setCategorieId(exercice.categorie.id)
-    setType(exercice.type)
+    setType(exercice.type === 'barre' ? 'barre' : 'bulle')
   }
 
   const handleToggle = async (id: number) => {
@@ -153,7 +176,7 @@ const ExercicesPage = () => {
         ))}
       </select>
 
-      <select value={type} onChange={e => setType(e.target.value)}>
+      <select value={type} onChange={e => setType(e.target.value === 'barre' ? 'barre' : 'bulle')}>
         <option value='bulle'>Bulle (cercle)</option>
         <option value='barre'>Barre de progression</option>
       </select>
@@ -178,6 +201,7 @@ const ExercicesPage = () => {
             <th>Inspiration</th>
             <th>Apnée</th>
             <th>Expiration</th>
+            <th>Type</th>
             <th>Actif</th>
             <th>Actions</th>
           </tr>
@@ -190,6 +214,7 @@ const ExercicesPage = () => {
               <td>{exercice.inspiration}s</td>
               <td>{exercice.apnee}s</td>
               <td>{exercice.expiration}s</td>
+              <td>{exercice.type === 'barre' ? 'Barre de progression' : 'Bulle (cercle)'}</td>
               <td>{exercice.isActive ? 'Oui' : 'Non'}</td>
               <td>
                 <button 
